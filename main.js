@@ -8,10 +8,19 @@ var monet = monetABI.at("0x71C1f17b57F34c0c117044381c47c743CC47e582");
 
 var lastInsertedNode = null;
 var elTemplate = `
-<div class="hdr">Date</div><div class="val" id="{{did}}">{{ date }}</div><div class="hdr">From</div><div class="val">{{ from }}</div><div class="hdr">Value</div><div class="val">{{ val }}</div><div class="hdr">Sndr new bal.</div><div class="val">{{ sendend }}</div>
-<div class="hdr">Block</div><div class="val">{{ r.blockNumber }}</div><div class="hdr">To</div><div class="val">{{ to }}</div><div class="hdr">Gas</div><div class="val">{{ gas }}</div><div class="hdr">Rcpt new bal.</div><div class="val">{{ recvend }}</div>
+<div class="hdr" style="min-width:4em">Date</div><div class="val" style="min-width:16em">{{ date }}</div>
+<div class="hdr" style="min-width:4em">From</div><div class="val" style="min-width:30em;text-align:left">{{ from }}</div>
+<div class="hdr" style="min-width:5em">Sndr new bal.</div><div class="val" style="min-width:6em">{{ sendend }}</div>
+<br>
 
-`;
+<div class="hdr" style="min-width:4em">Block</div><div class="val" style="min-width:4em">{{ r.blockNumber }}</div>
+<div class="hdr" style="min-width:calc(3.5em - 8px)">Value</div><div class="val" style="min-width:4.5em">{{ val }}</div>
+<div class="hdr" style="min-width:4em">To</div><div class="val" style="min-width:30em;text-align:left">{{ to }}</div>
+
+<div class="hdr" style="min-width:5em">Rcpt new bal.</div><div class="val" style="min-width:6em">{{ recvend }}</div>
+
+
+`; //<div class="hdr">Gas</div><div class="val">{{ gas }}</div>
 var knownAddr = {
   "Michael/main": "0xAE989c08FFD76D447228151cB42d781f682655cF",
   "Michael":"0x93d34d2bb39ae8ca558c1bb37e3b478680f1d5b7",
@@ -24,7 +33,7 @@ var knownAddr = {
   "Jack": "0x2fD43DB0C6C289550E99FA5CB46d9F395092E8e6",
   "Albert": "0x6ed2d4F70bE996d3c72F3e6a9531158a3f759046",
   "Tong": "0x909a22c54b844561493b5517CA3eAf81d8d06BAC",
-  "Poker pool":"0x609ef3199e416d19f248716cc74664821eb74717",
+  "Staging":"0x609ef3199e416d19f248716cc74664821eb74717",
 }
 function translateAddr(x) {
   for (var key in knownAddr) {
@@ -52,15 +61,23 @@ function createElement(result, callback) {
     vw["date"] = new Date(res.timestamp*1000).toLocaleString();
     callback(Mustache.render(elTemplate,vw));
   })
-  monet.balanceOf(result.args.from, result.blockNumber, function(er, res){
-    vw["sendend"] = web3.fromWei(res, "ether")
+  monet.balanceOf(result.args.from, result.blockNumber, function(err, res){
+    if (err != null) {
+      vw["sendend"] = "Unknown"
+    } else {
+      vw["sendend"] = web3.fromWei(res, "ether")
+    }
     callback(Mustache.render(elTemplate,vw));
   });
-  monet.balanceOf(result.args.to, result.blockNumber, function(er, res){
-    vw["recvend"] = web3.fromWei(res, "ether")
+  monet.balanceOf(result.args.to, result.blockNumber, function(err, res){
+    if (err != null) {
+      vw["recvend"] = "Unknown"
+    } else {
+      vw["recvend"] = web3.fromWei(res, "ether")
+    }
     callback(Mustache.render(elTemplate,vw));
   });
-  web3.eth.getTransaction(result.transactionHash, function(er, res){
+  web3.eth.getTransaction(result.transactionHash, function(err, res){
     vw["gas"] = res.gas + " @ " + web3.fromWei(res.gasPrice,"gwei") + "GWei";
     callback(Mustache.render(elTemplate,vw));
   });
