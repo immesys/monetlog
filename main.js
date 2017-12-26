@@ -8,14 +8,14 @@ var monet = monetABI.at("0x71C1f17b57F34c0c117044381c47c743CC47e582");
 
 var lastInsertedNode = null;
 var elTemplate = `
-<div class="hdr" style="min-width:4em">Date</div><div class="val" style="min-width:16em">{{ date }}</div>
-<div class="hdr" style="min-width:4em">From</div><div class="val" style="min-width:30em;text-align:left">{{ from }}</div>
+<div class="hdr" style="min-width:3em">Date</div><div class="val" style="min-width:16em">{{ date }}</div>
+<div class="hdr" style="min-width:3em">From</div><div class="val" style="min-width:30em;text-align:left">{{ from }}</div>
 <div class="hdr" style="min-width:5em">Sndr new bal.</div><div class="val" style="min-width:6em">{{ sendend }}</div>
 <br>
 
-<div class="hdr" style="min-width:4em">Block</div><div class="val" style="min-width:4em">{{ r.blockNumber }}</div>
+<div class="hdr" style="min-width:3em">Block</div><div class="val" style="min-width:4em">{{ r.blockNumber }}</div>
 <div class="hdr" style="min-width:calc(3.5em - 8px)">Value</div><div class="val" style="min-width:4.5em">{{ val }}</div>
-<div class="hdr" style="min-width:4em">To</div><div class="val" style="min-width:30em;text-align:left">{{ to }}</div>
+<div class="hdr" style="min-width:3em">To</div><div class="val" style="min-width:30em;text-align:left">{{ to }}</div>
 
 <div class="hdr" style="min-width:5em">Rcpt new bal.</div><div class="val" style="min-width:6em">{{ recvend }}</div>
 
