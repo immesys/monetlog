@@ -46,6 +46,11 @@ function translateAddr(x) {
   }
   return x;
 }
+
+const numberWithCommas = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function createElement(result, callback) {
   var vw = {"r":result}
   //console.log(result)
@@ -55,7 +60,7 @@ function createElement(result, callback) {
   vw["sendend"] = "Loading...";
   vw["recvend"] = "Loading...";
   vw["gas"] = "Loading...";
-  vw["val"] = web3.fromWei(result.args.value,"ether");
+  vw["val"] = numberWithCommas(web3.fromWei(result.args.value,"ether"));
   callback(Mustache.render(elTemplate,vw));
   web3.eth.getBlock(result.blockNumber, function(err, res) {
     vw["date"] = new Date(res.timestamp*1000).toLocaleString();
@@ -65,7 +70,7 @@ function createElement(result, callback) {
     if (err != null) {
       vw["sendend"] = "Unknown"
     } else {
-      vw["sendend"] = web3.fromWei(res, "ether")
+      vw["sendend"] = numberWithCommas(web3.fromWei(res, "ether"))
     }
     callback(Mustache.render(elTemplate,vw));
   });
@@ -73,7 +78,7 @@ function createElement(result, callback) {
     if (err != null) {
       vw["recvend"] = "Unknown"
     } else {
-      vw["recvend"] = web3.fromWei(res, "ether")
+      vw["recvend"] = numberWithCommas(web3.fromWei(res, "ether"))
     }
     callback(Mustache.render(elTemplate,vw));
   });
